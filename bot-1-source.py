@@ -7,6 +7,7 @@ from binance.client import Client
 import os
 
 """this is a test commit to see if it works"""
+"""this is a test commit to see if it works 1"""
 #API Keys
 api_key = "h3cn0BMMedkmF9hshLwgriBtKpdi8LJfxXY5AolBPQPwCB7Cu8hT2xB91Bo8XYAk"
 api_secret = "J9961dgrgDe7YHMyMPyqPVM47AG91LMAxwiDbEvugvjS0MeaC2aBPatZZ6zU30Wh"
