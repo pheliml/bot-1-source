@@ -7,8 +7,8 @@ from binance.client import Client
 
 
 #API Keys
-API_KEY = "h3cn0BMMedkmF9hshLwgriBtKpdi8LJfxXY5AolBPQPwCB7Cu8hT2xB91Bo8XYAk"
-API_SECRET = "J9961dgrgDe7YHMyMPyqPVM47AG91LMAxwiDbEvugvjS0MeaC2aBPatZZ6zU30Wh"
+#API_KEY = <API_KEY>
+#API_SECRET = <API_SECRET>
 client = Client(API_KEY, API_SECRET)
 client.API_URL = 'https://api.binance.com'
 
