@@ -6,10 +6,11 @@ import ta
 import urllib.parse
 from binance.client import Client
 from binance.enums import *
+import os
 
 """Initialise the Binance API call"""
-api_key = "mYKtwGFoTFYAR3XLPSW8oMyvK20iHjfOMUwsWnr6r3zSQ5awJ0PIieutZZ4G7dS7"
-api_secret = "hqFCEEps7OPaL7vsNeGJU0F55PwwCeLOgTjakpYI6wDpFAzMOWr2yFbAIoPl8fzL"
+api_key = os.getenv("API_KEY")
+api_secret = os.getenv("API_SECRET")
 client = Client(api_key, api_secret)
 
 
@@ -93,5 +94,5 @@ async def main():
                         print(subdf.iloc[-1])
             if not open_position:
                 print(df.iloc[-1])
-                
+
 asyncio.get_event_loop().run_until_complete(main())
