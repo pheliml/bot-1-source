@@ -3,16 +3,14 @@ import json
 import pandas as pd
 import asyncio
 import ta
-import urllib.parse
 from binance.client import Client
 from binance.enums import *
 import os
 
-"""Initialise the Binance API call
+"""Initialise the Binance API call"""
 api_key = os.getenv("API_KEY")
-api_secret = os.getenv("API_SECRET")"""
-api_key = "mYKtwGFoTFYAR3XLPSW8oMyvK20iHjfOMUwsWnr6r3zSQ5awJ0PIieutZZ4G7dS7"
-api_secret = "hqFCEEps7OPaL7vsNeGJU0F55PwwCeLOgTjakpYI6wDpFAzMOWr2yFbAIoPl8fzL"
+api_secret = os.getenv("API_SECRET")
+
 client = Client(api_key, api_secret)
 
 
@@ -76,7 +74,7 @@ async def main():
                         subdf["highest"] = subdf.Price.cummax()
                         subdf["trailingstop"] = subdf["highest"] * 0.995
                         if subdf.iloc[-1].Price < subdf.iloc[-1].trailingstop or \
-                        df.iloc[-1].Price / float(order["fills"][0]["price"]) >1.001:
+                        df.iloc[-1].Price / float(order["fills"][0]["price"]) >1.002:
                             try:
                                 order = client.create_order(
                                 symbol='ETHUSDT',
@@ -92,7 +90,7 @@ async def main():
                             print(f"Trade Placed - USDT:{tether_sell_price}")
                             print(f"You made {(tether_sell_price - tether_buy_price)} profit UDST")
                             open_position = False
-                            
+                            break
                         print(subdf.iloc[-1])
             if not open_position:
                 print(df.iloc[-1])
