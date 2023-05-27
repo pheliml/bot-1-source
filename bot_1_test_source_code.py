@@ -28,6 +28,7 @@ def createframe(msg):
     df.Time = pd.to_datetime(df.Time, unit="ms")
     return df
 
+#test
 #Connect to websocket
 stream =\
 websockets.connect("wss://testnet.binance.vision/stream?streams=ethusdt@miniTicker")
