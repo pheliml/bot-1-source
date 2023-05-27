@@ -4,10 +4,12 @@ import websockets
 import pandas as pd
 import ta
 from binance.client import Client
+from colorama import Fore, Style
 import logging
 logging.basicConfig(filename = 'file.log',
                     level = logging.INFO,
                     format = '%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+print(Style.RESET_ALL)
 
 #API Keys
 API_KEY = "h3cn0BMMedkmF9hshLwgriBtKpdi8LJfxXY5AolBPQPwCB7Cu8hT2xB91Bo8XYAk"
@@ -56,13 +58,14 @@ async def main():
                             quantity=10)
                             print(buy_limit)
                             buy_price = df.iloc[-1].Price
-                            print(f"Buy Price: {buy_price}")
+                            print(Fore.GREEN + f"Buy Price: {buy_price}")
                             transact_time = df.iloc[-1].Time
                         except Exception as e:
                             print(e)
                         open_position = True
-                        print(f"Trade Placed: {df.iloc[-1].Time}")
+                        print(Fore.GREEN + f"Trade Placed: {df.iloc[-1].Time}")
                         logging.info("Buy Order Excecuted")
+                        print(Style.RESET_ALL)
                 if open_position:
                     subdf = df[df.Time >= transact_time]
                     if len(subdf) > 1:
@@ -79,13 +82,14 @@ async def main():
                                 quantity=10)
                                 print(sell_limit)
                                 sell_price = subdf.iloc[-1].Price
-                                print(f"Option Sold at: {sell_price}")
+                                print(Fore.GREEN + f"Option Sold at: {sell_price}")
                             except Exception as e:
                                 print(e) 
                             open_position = False
                             print(f"Trade Closed: {subdf.iloc[-1].Time}")
                             print(f"Sold at: {sell_price} for a profit of {sell_price - buy_price}")
                             logging.info("Sell Order Executed")
+                            print(Style.RESET_ALL)
                             #return sell_price, buy_price
     
                         print(subdf.iloc[-1])        
