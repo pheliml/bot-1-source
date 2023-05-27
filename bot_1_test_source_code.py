@@ -4,7 +4,10 @@ import websockets
 import pandas as pd
 import ta
 from binance.client import Client
-
+import logging
+logging.basicConfig(filename = 'file.log',
+                    level = logging.INFO,
+                    format = '%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 
 #API Keys
 API_KEY = "h3cn0BMMedkmF9hshLwgriBtKpdi8LJfxXY5AolBPQPwCB7Cu8hT2xB91Bo8XYAk"
@@ -45,6 +48,7 @@ async def main():
                 if not open_position:
                     if ta.momentum.roc(df.Price, 30).iloc[-1] > 0 and \
                     ta.momentum.roc(df.Price, 30).iloc[-2]:
+                        logging.info("Creating Buy Order")
                         try:
                             buy_limit = client.create_test_order(
                             symbol='ETHUSDT',
@@ -59,13 +63,15 @@ async def main():
                             print(e)
                         open_position = True
                         print(f"Trade Placed: {df.iloc[-1].Time}")
+                        logging.info("Buy Order Excecuted")
                 if open_position:
                     subdf = df[df.Time >= transact_time]
                     if len(subdf) > 1:
                         subdf["highest"] = subdf.Price.cummax()
                         subdf["trailingstop"] = subdf["highest"] * 0.995
                         if (subdf.iloc[-1].Price < subdf.iloc[-1].trailingstop).all() or \
-                        ((df.iloc[-1].Price / buy_price) > 1.002).all():
+                        ((df.iloc[-1].Price / buy_price) > 1.0002).all():
+                            logging.info("Creating Sell Order")
                             try:
                                 sell_limit = client.create_test_order(
                                 symbol='ETHUSDT',
@@ -80,8 +86,9 @@ async def main():
                             open_position = False
                             print(f"Trade Closed: {subdf.iloc[-1].Time}")
                             print(f"Sold at: {sell_price} for a profit of {sell_price - buy_price}")
+                            logging.info("Sell Order Executed")
                             #return sell_price, buy_price
-                            break
+    
                         print(subdf.iloc[-1])        
             if not open_position:
                 print(df.iloc[-1])                                 
