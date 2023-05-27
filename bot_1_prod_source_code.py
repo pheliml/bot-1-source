@@ -6,6 +6,8 @@ import ta
 from binance.client import Client
 from binance.enums import *
 import os
+import logging 
+
 
 """Initialise the Binance API call"""
 api_key = os.getenv("API_KEY")
@@ -15,10 +17,12 @@ client = Client(api_key, api_secret)
 
 
 """Test API request to server"""
-ping = client.ping()
-print(ping)
-status = client.get_system_status()
-print(status)
+server_ping = client.ping()
+print(server_ping)
+server_status = client.get_system_status()
+print(server_status)
+account_status = client.get_account_api_trading_status()
+print(account_status)
 
 """Create the websocket connection"""
 stream =\
@@ -58,7 +62,7 @@ async def main():
                             symbol='ETHUSDT',
                             side='BUY',
                             type='MARKET',
-                            quantity=0.01)
+                            quantity=0.07)
                             print(order)
                         except Exception as e:
                             print(e)
@@ -72,7 +76,7 @@ async def main():
                     subdf = df[df.Time >= pd.to_datetime(order["transactTime"], unit="ms")]
                     if len(subdf) > 1:
                         subdf["highest"] = subdf.Price.cummax()
-                        subdf["trailingstop"] = subdf["highest"] * 0.995
+                        subdf["trailingstop"] = subdf["highest"] * 0.9975
                         if subdf.iloc[-1].Price < subdf.iloc[-1].trailingstop or \
                         df.iloc[-1].Price / float(order["fills"][0]["price"]) >1.002:
                             try:
@@ -80,7 +84,7 @@ async def main():
                                 symbol='ETHUSDT',
                                 side='SELL',
                                 type='MARKET',
-                                quantity=0.01)
+                                quantity=0.07)
                                 print(order)
                             except Exception as e:
                                 print(e)
@@ -90,7 +94,6 @@ async def main():
                             print(f"Trade Placed - USDT:{tether_sell_price}")
                             print(f"You made {(tether_sell_price - tether_buy_price)} profit UDST")
                             open_position = False
-                            break
                         print(subdf.iloc[-1])
             if not open_position:
                 print(df.iloc[-1])
