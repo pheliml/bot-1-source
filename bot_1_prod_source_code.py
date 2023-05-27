@@ -6,9 +6,13 @@ import ta
 from binance.client import Client
 from binance.enums import *
 import os
+from colorama import Style, Fore
 import logging 
+logging.basicConfig(filename = 'file.log',
+                    level = logging.INFO,
+                    format = '%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 
-#test production commit 1
+print(Style.RESET_ALL)
 
 """Initialise the Binance API call"""
 api_key = os.getenv("API_KEY")
@@ -57,6 +61,7 @@ async def main():
                 if not open_position:
                     if ta.momentum.roc(df.Price, 30).iloc[-1] > 0 and \
                     ta.momentum.roc(df.Price, 30).iloc[-2]:
+                        logging.info("Creating Buy Order")
                         # create a real order if the test orders did not raise an exception
                         try:
                             order = client.create_order(
@@ -71,7 +76,9 @@ async def main():
                         open_position = True
                         buy_price = float(order["fills"][0]["price"])
                         tether_buy_price = float(order["cummulativeQuoteQty"])
-                        print(f"Trade Placed - USDT:{tether_buy_price}")
+                        print(Fore.GREEN + f"Trade Placed - USDT:{tether_buy_price}")
+                        logging.info("Executed Buy Order")
+                        print(Style.RESET_ALL)
             
                 if open_position:
                     subdf = df[df.Time >= pd.to_datetime(order["transactTime"], unit="ms")]
@@ -80,6 +87,7 @@ async def main():
                         subdf["trailingstop"] = subdf["highest"] * 0.9975
                         if subdf.iloc[-1].Price < subdf.iloc[-1].trailingstop or \
                         df.iloc[-1].Price / float(order["fills"][0]["price"]) >1.002:
+                            logging.info("Creating Sell Order")
                             try:
                                 order = client.create_order(
                                 symbol='ETHUSDT',
@@ -92,8 +100,10 @@ async def main():
                                 break
                             sell_price = float(order["fills"][0]["price"])
                             tether_sell_price = float(order["cummulativeQuoteQty"])
-                            print(f"Trade Placed - USDT:{tether_sell_price}")
+                            print(Fore.GREEN + f"Trade Placed - USDT:{tether_sell_price}")
                             print(f"You made {(tether_sell_price - tether_buy_price)} profit UDST")
+                            logging.info("Executed Sell Order")
+                            print(Style.RESET_ALL)
                             open_position = False
                         print(subdf.iloc[-1])
             if not open_position:
