@@ -21,7 +21,8 @@ Before running this script, ensure you have the following requirements:
 4. Set your Binance API_KEY and API_SECRET as environment variables. Alternatively, you can directly replace them in the script.
 
 5. Run the script using the following command:
-		python trading_bot.py
+
+python trading_bot.py
 
 
 ## Strategy
